@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Monitor Mobil · Astrapay</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+</head>
+
+<body>
+    <div class="dashboard-app">
+        <header class="app-header">
+            <div class="brand-group">
+                <div class="brand-icon"></div>
+                <div class="brand-text">
+                    <span class="brand-name">ASTRAPAY</span>
+                    <span class="brand-sub">Dashboard 3D Kesehatan Mobil</span>
+                </div>
+            </div>
+            <div class="header-meta">
+                <div class="meta-chip">
+                    <span class="chip-dot live"></span>
+                    <span>Sensor Terdeteksi</span>
+                </div>
+                <div class="meta-chip">
+                    <span class="chip-icon">⌛</span>
+                    <span id="session-km">Sesi: 0 km</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="workspace">
+            <div class="canvas-panel card">
+                <div class="canvas-topbar">
+                    <div class="speedo-block">
+                        <span class="speedo-val" id="speedo-num">0</span>
+                        <span class="speedo-unit">km/h</span>
+                        <span class="rpm-val" id="rpm-display">800 RPM</span>
+                    </div>
+                    <div class="cam-mode-toggle">
+                        <button class="cam-btn active" id="btn-2d" onclick="setViewMode('2D')">2D</button>
+                        <button class="cam-btn" id="btn-3d" onclick="setViewMode('3D')">3D</button>
+                    </div>
+                </div>
+
+                <div class="canvas-wrapper" id="canvas-container">
+                    <svg id="anno-svg">
+                        <path id="path-engine" class="anno-line" />
+                        <path id="path-brakes" class="anno-line" />
+                        <path id="path-tires" class="anno-line" />
+                        <path id="path-suspension" class="anno-line" />
+                    </svg>
+
+                    <div class="hud-tag" id="label-engine" onclick="selectComponent('engine')">
+                        <div class="hud-sensor-dot" id="dot-engine"></div>
+                        <div class="hud-tag-content">
+                            <span class="hud-label-name">MESIN</span>
+                            <span class="hud-label-val" id="hud-engine-val">100%</span>
+                            <span class="hud-label-sub" id="hud-engine-sub">800 RPM · 38°C</span>
+                        </div>
+                    </div>
+                    <div class="hud-tag" id="label-brakes" onclick="selectComponent('brakes')">
+                        <div class="hud-sensor-dot" id="dot-brakes"></div>
+                        <div class="hud-tag-content">
+                            <span class="hud-label-name">SISTEM REM</span>
+                            <span class="hud-label-val" id="hud-brakes-val">100%</span>
+                            <span class="hud-label-sub" id="hud-brakes-sub">38°C · 0 Kejadian</span>
+                        </div>
+                    </div>
+                    <div class="hud-tag" id="label-tires" onclick="selectComponent('tires')">
+                        <div class="hud-sensor-dot" id="dot-tires"></div>
+                        <div class="hud-tag-content">
+                            <span class="hud-label-name">BAN</span>
+                            <span class="hud-label-val" id="hud-tires-val">100%</span>
+                            <span class="hud-label-sub" id="hud-tires-sub">32 PSI · 0 Kejadian</span>
+                        </div>
+                    </div>
+                    <div class="hud-tag" id="label-suspension" onclick="selectComponent('suspension')">
+                        <div class="hud-sensor-dot" id="dot-suspension"></div>
+                        <div class="hud-tag-content">
+                            <span class="hud-label-name">SUSPENSI</span>
+                            <span class="hud-label-val" id="hud-suspension-val">100%</span>
+                            <span class="hud-label-sub" id="hud-suspension-sub">0 Dampak Log</span>
+                        </div>
+                    </div>
+
+                    <div class="card detail-drawer" id="detail-drawer">
+                        <div class="drawer-head">
+                            <div>
+                                <h3 class="drawer-title" id="drawer-title">Tidak Ada Komponen Terpilih</h3>
+                                <span class="drawer-subtitle" id="drawer-subtitle">Pilih salah satu komponen di atas
+                                    untuk melihat detail.</span>
+                            </div>
+                            <button class="drawer-close" onclick="closeDrawer()">✕</button>
+                        </div>
+                        <div id="drawer-empty">
+                            <p class="drawer-empty-txt">Klik bagian sasis mobil atau tag sensor untuk melihat status
+                                diagnostik waktu nyata.</p>
+                        </div>
+                        <div id="drawer-detail" class="hidden">
+                            <div class="drawer-health-row">
+                                <div class="drawer-pct" id="drawer-pct">100%</div>
+                                <div class="drawer-right">
+                                    <span class="drawer-badge" id="drawer-badge">OPTIMAL</span>
+                                    <div class="drawer-bar-bg">
+                                        <div class="drawer-bar-fill" id="drawer-bar"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="drawer-diags">
+                                <div class="diag-row"><span>Status Sensor</span><span id="d-status">Nominal</span></div>
+                                <div class="diag-row"><span>Jumlah Kejadian Keausan</span><span id="d-events">0</span>
+                                </div>
+                                <div class="diag-row"><span>Nilai Sensor Saat Ini</span><span id="d-live">—</span></div>
+                                <div class="diag-row"><span>Estimasi Batas Servis</span><span id="d-service">45.000
+                                        km</span></div>
+                            </div>
+                            <div class="blok-formula">
+                                <h5 class="judul-formula">Formula Keausan yang Diterapkan</h5>
+                                <div id="rumus"></div>
+                                <p id="penjelasan"></p>
+                                <div id="daftar-variabel"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="canvas-footer-hint">
+                    <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2" fill="none">
+                        <circle cx="12" cy="12" r="10" />
+                        <path d="M12 16v-4M12 8h.01" />
+                    </svg>
+                    Klik komponen sasis atau tag sensor untuk menjalankan diagnostik lebih mendetail.
+                </div>
+            </div>
+
+            <div class="right-panel"></div>
+        </div>
+    </div>
+
+    <script src="main.js"></script>
+</body>
+
+</html>

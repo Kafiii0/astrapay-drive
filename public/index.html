@@ -58,7 +58,7 @@
                         <path id="path-pedal" class="anno-line" />
                     </svg>
 
-                    <div class="hud-tag" id="label-engine" onclick="selectComponent('engine')">
+                    <div class="hud-tag" id="label-engine" onclick="selectComponent('engine')" onmouseenter="setHoveredPart('engine')" onmouseleave="setHoveredPart(null)">
                         <div class="hud-sensor-dot" id="dot-engine"></div>
                         <div class="hud-tag-content">
                             <span class="hud-label-name">MESIN</span>
@@ -66,7 +66,7 @@
                             <span class="hud-label-sub" id="hud-engine-sub">800 RPM · 38°C</span>
                         </div>
                     </div>
-                    <div class="hud-tag" id="label-brakes" onclick="selectComponent('brakes')">
+                    <div class="hud-tag" id="label-brakes" onclick="selectComponent('brakes')" onmouseenter="setHoveredPart('brakes')" onmouseleave="setHoveredPart(null)">
                         <div class="hud-sensor-dot" id="dot-brakes"></div>
                         <div class="hud-tag-content">
                             <span class="hud-label-name">SISTEM REM</span>
@@ -74,7 +74,7 @@
                             <span class="hud-label-sub" id="hud-brakes-sub">38°C · 0 Kejadian</span>
                         </div>
                     </div>
-                    <div class="hud-tag" id="label-tires" onclick="selectComponent('tires')">
+                    <div class="hud-tag" id="label-tires" onclick="selectComponent('tires')" onmouseenter="setHoveredPart('tires')" onmouseleave="setHoveredPart(null)">
                         <div class="hud-sensor-dot" id="dot-tires"></div>
                         <div class="hud-tag-content">
                             <span class="hud-label-name">BAN</span>
@@ -82,7 +82,7 @@
                             <span class="hud-label-sub" id="hud-tires-sub">32 PSI · 0 Kejadian</span>
                         </div>
                     </div>
-                    <div class="hud-tag" id="label-suspension" onclick="selectComponent('suspension')">
+                    <div class="hud-tag" id="label-suspension" onclick="selectComponent('suspension')" onmouseenter="setHoveredPart('suspension')" onmouseleave="setHoveredPart(null)">
                         <div class="hud-sensor-dot" id="dot-suspension"></div>
                         <div class="hud-tag-content">
                             <span class="hud-label-name">SUSPENSI</span>
@@ -90,7 +90,7 @@
                             <span class="hud-label-sub" id="hud-suspension-sub">0 Dampak Log</span>
                         </div>
                     </div>
-                    <div class="hud-tag" id="label-pedal" onclick="selectComponent('pedal')">
+                    <div class="hud-tag" id="label-pedal" onclick="selectComponent('pedal')" onmouseenter="setHoveredPart('pedal')" onmouseleave="setHoveredPart(null)">
                         <div class="hud-sensor-dot" id="dot-pedal"></div>
                         <div class="hud-tag-content">
                             <span class="hud-label-name">PEDAL GAS</span>

@@ -1,11 +1,11 @@
 let globalState = {
     driverScore: 100,
     parts: {
-        brakes:     { health: 100, events: 0, temperature: 38 },
-        tires:      { health: 100, events: 0, pressure: 32 },
-        engine:     { health: 100, events: 0, rpm: 800 },
+        brakes: { health: 100, events: 0, temperature: 38 },
+        tires: { health: 100, events: 0, pressure: 32 },
+        engine: { health: 100, events: 0, rpm: 800 },
         suspension: { health: 100, events: 0, load: 0.1 },
-        pedal:      { health: 100, events: 0, position: 0 }
+        pedal: { health: 100, events: 0, position: 0 }
     },
     sessionKm: 0
 };
@@ -36,20 +36,20 @@ function updateUI(data) {
     const P = data.parts;
 
     function setTag(key, pct, sub) {
-        document.getElementById(`hud-${key}-val`).innerText  = `${pct.toFixed(0)}%`;
+        document.getElementById(`hud-${key}-val`).innerText = `${pct.toFixed(0)}%`;
         document.getElementById(`hud-${key}-val`).style.color = colorFor(pct);
-        document.getElementById(`hud-${key}-sub`).innerText  = sub;
+        document.getElementById(`hud-${key}-sub`).innerText = sub;
         document.getElementById(`dot-${key}`).style.background = colorFor(pct);
-        document.getElementById(`dot-${key}`).style.boxShadow  = `0 0 6px ${colorFor(pct)}`;
+        document.getElementById(`dot-${key}`).style.boxShadow = `0 0 6px ${colorFor(pct)}`;
     }
 
-    setTag('engine',     P.engine.health,     `${P.engine.rpm.toLocaleString('id-ID')} RPM`);
-    setTag('brakes',     P.brakes.health,     `${P.brakes.temperature.toFixed(0)}°C · ${P.brakes.events} Kejadian`);
-    setTag('tires',      P.tires.health,      `${P.tires.pressure.toFixed(1)} PSI · ${P.tires.events} Kejadian`);
+    setTag('engine', P.engine.health, `${P.engine.rpm.toLocaleString('id-ID')} RPM`);
+    setTag('brakes', P.brakes.health, `${P.brakes.temperature.toFixed(0)}°C · ${P.brakes.events} Kejadian`);
+    setTag('tires', P.tires.health, `${P.tires.pressure.toFixed(1)} PSI · ${P.tires.events} Kejadian`);
     setTag('suspension', P.suspension.health, `${P.suspension.events} Dampak Terdeteksi`);
-    setTag('pedal',      P.pedal.health,      `${P.pedal.position}% Posisi`);
+    setTag('pedal', P.pedal.health, `${P.pedal.position}% Posisi`);
 
-    document.getElementById('speedo-num').innerText  = 0;
+    document.getElementById('speedo-num').innerText = 0;
     document.getElementById('rpm-display').innerText = `${P.engine.rpm.toLocaleString('id-ID')} RPM`;
 }
 
@@ -92,7 +92,7 @@ const grid = new THREE.GridHelper(14, 14, 0xe2e8f0, 0xf1f5f9);
 grid.position.y = -0.22;
 scene.add(grid);
 
-const TUBE_R  = 0.022;
+const TUBE_R = 0.022;
 const TUBE_SEG = 24;
 const TUBE_LEN = 18;
 
@@ -130,8 +130,8 @@ const highlightPipeMat = new THREE.MeshPhysicalMaterial({
 
 function makeTube(points, radius = TUBE_R, mat = pipeMat) {
     const curve = new THREE.CatmullRomCurve3(points);
-    const geo   = new THREE.TubeGeometry(curve, TUBE_LEN, radius, TUBE_SEG, false);
-    const mesh  = new THREE.Mesh(geo, mat.clone());
+    const geo = new THREE.TubeGeometry(curve, TUBE_LEN, radius, TUBE_SEG, false);
+    const mesh = new THREE.Mesh(geo, mat.clone());
     mesh.castShadow = true;
     return mesh;
 }
@@ -141,7 +141,7 @@ function makeRod(from, to, r = 0.018, mat = pipeMat) {
     return makeTube(pts, r, mat);
 }
 
-function makeGhostBox(geo, pos, rot = [0,0,0]) {
+function makeGhostBox(geo, pos, rot = [0, 0, 0]) {
     const group = new THREE.Group();
     const mesh = new THREE.Mesh(geo, shellMat);
     mesh.position.set(...pos);
@@ -159,19 +159,19 @@ scene.add(chassisGroup);
 
 [-0.75, 0.75].forEach(x => {
     chassisGroup.add(makeTube([
-        new THREE.Vector3(x,  0,    1.8),
-        new THREE.Vector3(x,  0,    1.2),
+        new THREE.Vector3(x, 0, 1.8),
+        new THREE.Vector3(x, 0, 1.2),
         new THREE.Vector3(x, -0.05, 0.6),
-        new THREE.Vector3(x, -0.05,-0.6),
-        new THREE.Vector3(x,  0,   -1.2),
-        new THREE.Vector3(x,  0,   -1.8)
+        new THREE.Vector3(x, -0.05, -0.6),
+        new THREE.Vector3(x, 0, -1.2),
+        new THREE.Vector3(x, 0, -1.8)
     ]));
 
     chassisGroup.add(makeTube([
-        new THREE.Vector3(x,  0.55, 0.95),
-        new THREE.Vector3(x,  0.65, 0.4),
-        new THREE.Vector3(x,  0.65,-0.4),
-        new THREE.Vector3(x,  0.55,-0.95)
+        new THREE.Vector3(x, 0.55, 0.95),
+        new THREE.Vector3(x, 0.65, 0.4),
+        new THREE.Vector3(x, 0.65, -0.4),
+        new THREE.Vector3(x, 0.55, -0.95)
     ], TUBE_R * 0.8));
 });
 
@@ -179,13 +179,13 @@ chassisGroup.add(makeRod([-0.75, 0, 1.8], [0.75, 0, 1.8], 0.024));
 chassisGroup.add(makeRod([-0.75, 0, 1.3], [0.75, 0, 1.3], 0.020));
 chassisGroup.add(makeRod([-0.75, -0.05, 0.6], [0.75, -0.05, 0.6], 0.020));
 chassisGroup.add(makeRod([-0.75, -0.05, 0.0], [0.75, -0.05, 0.0], 0.020));
-chassisGroup.add(makeRod([-0.75, -0.05,-0.6], [0.75, -0.05,-0.6], 0.020));
+chassisGroup.add(makeRod([-0.75, -0.05, -0.6], [0.75, -0.05, -0.6], 0.020));
 chassisGroup.add(makeRod([-0.75, 0, -1.3], [0.75, 0, -1.3], 0.024));
 chassisGroup.add(makeRod([-0.75, 0, -1.8], [0.75, 0, -1.8], 0.024));
 
 const frontBumperPts = [];
 const rearBumperPts = [];
-for(let i=0; i<=8; i++) {
+for (let i = 0; i <= 8; i++) {
     const theta = (i / 8) * Math.PI * 0.4 - Math.PI * 0.2;
     frontBumperPts.push(new THREE.Vector3(Math.sin(theta) * 1.5, 0.05, 1.95 + Math.cos(theta) * 0.08 - 0.08));
     rearBumperPts.push(new THREE.Vector3(Math.sin(theta) * 1.5, 0.05, -1.95 - Math.cos(theta) * 0.08 + 0.08));
@@ -209,16 +209,16 @@ function makeWheelArch(x, z, r = 0.38) {
 });
 
 chassisGroup.add(makeTube([
-    new THREE.Vector3(0,  0.05, 1.6),
-    new THREE.Vector3(0, -0.1,  0.8),
+    new THREE.Vector3(0, 0.05, 1.6),
+    new THREE.Vector3(0, -0.1, 0.8),
     new THREE.Vector3(0, -0.15, 0.0),
     new THREE.Vector3(0, -0.1, -0.8),
-    new THREE.Vector3(0,  0.05,-1.6)
+    new THREE.Vector3(0, 0.05, -1.6)
 ], TUBE_R * 0.85, highlightPipeMat));
 
 [-0.72, 0.72].forEach(x => {
     chassisGroup.add(makeTube([
-        new THREE.Vector3(x, 0,    0.98),
+        new THREE.Vector3(x, 0, 0.98),
         new THREE.Vector3(x, 0.28, 0.92),
         new THREE.Vector3(x, 0.55, 0.95)
     ], TUBE_R * 0.8));
@@ -230,16 +230,16 @@ chassisGroup.add(makeTube([
 
 [-0.72, 0.72].forEach(x => {
     chassisGroup.add(makeTube([
-        new THREE.Vector3(x, 0,    -0.95),
-        new THREE.Vector3(x, 0.3,  -1.0),
+        new THREE.Vector3(x, 0, -0.95),
+        new THREE.Vector3(x, 0.3, -1.0),
         new THREE.Vector3(x, 0.55, -0.95)
     ], TUBE_R * 0.85));
 });
 
 [-0.7, 0.7].forEach(x => {
     chassisGroup.add(makeTube([
-        new THREE.Vector3(x, 0.65,  0.95),
-        new THREE.Vector3(x, 0.72,  0.3),
+        new THREE.Vector3(x, 0.65, 0.95),
+        new THREE.Vector3(x, 0.72, 0.3),
         new THREE.Vector3(x, 0.72, -0.3),
         new THREE.Vector3(x, 0.65, -0.95)
     ], TUBE_R * 0.65));
@@ -251,7 +251,7 @@ chassisGroup.add(makeRod([-0.7, 0.72, -0.3], [0.7, 0.72, -0.3], 0.016));
 [-0.7, 0.7].forEach(x => {
     chassisGroup.add(makeRod([x, 0, 1.3], [x, 0.35, 1.3], TUBE_R));
     chassisGroup.add(makeRod([x, 0.35, 1.3], [0, 0.05, 1.55], TUBE_R * 0.7));
-    chassisGroup.add(makeRod([x, 0.35, 1.3], [x*0.4, 0.05, 1.4], TUBE_R * 0.7));
+    chassisGroup.add(makeRod([x, 0.35, 1.3], [x * 0.4, 0.05, 1.4], TUBE_R * 0.7));
 });
 
 chassisGroup.add(makeRod([-0.7, 0.35, 1.3], [0.7, 0.35, 1.3], 0.016, highlightPipeMat));
@@ -277,8 +277,8 @@ chassisGroup.add(makeGhostBox(hoodGeo, [0, 0.12, 1.35], [0.12, 0, 0]));
     chassisGroup.add(makeTube([
         new THREE.Vector3(x, -0.16, 1.2),
         new THREE.Vector3(x, -0.18, 0.0),
-        new THREE.Vector3(x, -0.16,-1.2)
-    ], 0.010, new THREE.MeshPhysicalMaterial({ color: 0xaab4be, metalness:.5, roughness:.6 })));
+        new THREE.Vector3(x, -0.16, -1.2)
+    ], 0.010, new THREE.MeshPhysicalMaterial({ color: 0xaab4be, metalness: .5, roughness: .6 })));
 });
 
 const exhaustMat = new THREE.MeshPhysicalMaterial({
@@ -308,7 +308,7 @@ const mufflerGeo = new THREE.CylinderGeometry(0.08, 0.08, 0.32, 16);
     muffler.rotation.x = Math.PI / 2;
     muffler.castShadow = true;
     scene.add(muffler);
-    
+
     const tip = new THREE.Mesh(new THREE.CylinderGeometry(0.026, 0.026, 0.12, 12), exhaustMat);
     tip.position.set(x, -0.06, -1.82);
     tip.rotation.x = Math.PI / 2;
@@ -318,7 +318,7 @@ const mufflerGeo = new THREE.CylinderGeometry(0.08, 0.08, 0.32, 16);
 const partsMeshes = { engine: [], brakes: [], tires: [], suspension: [], pedal: [] };
 
 function makePart(geo, pos, color = 0x10b981) {
-    const mat  = new THREE.MeshPhysicalMaterial({
+    const mat = new THREE.MeshPhysicalMaterial({
         color, metalness: 0.55, roughness: 0.35, transparent: true, opacity: 0.88,
         emissive: color, emissiveIntensity: 0.06
     });
@@ -338,7 +338,7 @@ const engHeadR = makePart(new THREE.BoxGeometry(0.18, 0.16, 0.52), [0.13, 0.22, 
 engHeadR.rotation.z = -Math.PI / 6;
 
 const radCasing = makePart(new THREE.BoxGeometry(0.68, 0.44, 0.06), [0, 0.15, 1.7]);
-const radHoseU  = makePart(new THREE.TubeGeometry(new THREE.CatmullRomCurve3([
+const radHoseU = makePart(new THREE.TubeGeometry(new THREE.CatmullRomCurve3([
     new THREE.Vector3(0, 0.25, 1.1),
     new THREE.Vector3(0, 0.32, 1.4),
     new THREE.Vector3(0, 0.28, 1.68)
@@ -372,8 +372,8 @@ scene.add(axleR);
 partsMeshes.suspension.push(axleL, axleR);
 
 const wheelPos = [
-    [-0.82, 0,  1.1], [ 0.82, 0,  1.1],
-    [-0.82, 0, -1.1], [ 0.82, 0, -1.1]
+    [-0.82, 0, 1.1], [0.82, 0, 1.1],
+    [-0.82, 0, -1.1], [0.82, 0, -1.1]
 ];
 
 const steeringBar = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 0.8, 12), steelMat);
@@ -397,14 +397,14 @@ wheelPos.forEach(pos => {
     const wx = pos[0];
     const wy = pos[1];
     const wz = pos[2];
-    
+
     const hx = wx * 0.84;
     const cx = wx * 0.62;
 
     const armU1 = makeRod([hx, wy + 0.12, wz], [cx, wy + 0.12, wz + 0.14], 0.012);
     const armU2 = makeRod([hx, wy + 0.12, wz], [cx, wy + 0.12, wz - 0.14], 0.012);
     partsMeshes.suspension.push(armU1, armU2);
-    
+
     const armL1 = makeRod([hx, wy - 0.10, wz], [cx, wy - 0.10, wz + 0.18], 0.014);
     const armL2 = makeRod([hx, wy - 0.10, wz], [cx, wy - 0.10, wz - 0.18], 0.014);
     partsMeshes.suspension.push(armL1, armL2);
@@ -413,9 +413,9 @@ wheelPos.forEach(pos => {
     tire.rotation.z = Math.PI / 2;
     partsMeshes.tires.push(tire);
 
-    const rimGeo  = new THREE.CylinderGeometry(0.18, 0.18, 0.21, 24);
-    const rimMat  = new THREE.MeshPhysicalMaterial({ color:0xbdc6d0, metalness:.85, roughness:.2 });
-    const rim     = new THREE.Mesh(rimGeo, rimMat);
+    const rimGeo = new THREE.CylinderGeometry(0.18, 0.18, 0.21, 24);
+    const rimMat = new THREE.MeshPhysicalMaterial({ color: 0xbdc6d0, metalness: .85, roughness: .2 });
+    const rim = new THREE.Mesh(rimGeo, rimMat);
     rim.position.set(...pos); rim.rotation.z = Math.PI / 2;
     scene.add(rim);
 
@@ -424,7 +424,7 @@ wheelPos.forEach(pos => {
     ], 0x10b981);
     partsMeshes.brakes.push(brake);
 
-    const disc  = makePart(new THREE.CylinderGeometry(0.15, 0.15, 0.025, 24), [
+    const disc = makePart(new THREE.CylinderGeometry(0.15, 0.15, 0.025, 24), [
         pos[0] * 0.88, pos[1], pos[2]
     ], 0xaab4be);
     disc.rotation.z = Math.PI / 2;
@@ -481,15 +481,15 @@ function update3DModel(data) {
         });
     }
 
-    applyColor(partsMeshes.engine,     P.engine.health);
-    applyColor(partsMeshes.brakes,     P.brakes.health);
-    applyColor(partsMeshes.tires,      P.tires.health);
+    applyColor(partsMeshes.engine, P.engine.health);
+    applyColor(partsMeshes.brakes, P.brakes.health);
+    applyColor(partsMeshes.tires, P.tires.health);
     applyColor(partsMeshes.suspension, P.suspension.health);
-    applyColor(partsMeshes.pedal,      P.pedal.health);
+    applyColor(partsMeshes.pedal, P.pedal.health);
 }
 
 const raycaster = new THREE.Raycaster();
-const mouse     = new THREE.Vector2();
+const mouse = new THREE.Vector2();
 
 const meshToKey = new Map();
 for (const [key, arr] of Object.entries(partsMeshes)) {
@@ -498,37 +498,45 @@ for (const [key, arr] of Object.entries(partsMeshes)) {
 
 let hoveredPart = null;
 
+function setHoveredPart(key) {
+    if (key !== hoveredPart) {
+        hoveredPart = key;
+        container.style.cursor = hoveredPart ? 'pointer' : 'default';
+        updatePartVisibilities();
+
+        ['engine', 'brakes', 'tires', 'suspension', 'pedal'].forEach(k => {
+            const card = document.getElementById(`label-${k}`);
+            if (card) {
+                card.classList.toggle('active', k === hoveredPart);
+            }
+        });
+    }
+}
+
 container.addEventListener('mousemove', e => {
+    if (e.target.closest('.hud-tag') || e.target.closest('.detail-drawer') || e.target.closest('.canvas-topbar')) return;
+
     const rect = renderer.domElement.getBoundingClientRect();
-    mouse.x =  ((e.clientX - rect.left) / rect.width)  * 2 - 1;
-    mouse.y = -((e.clientY - rect.top)  / rect.height) * 2 + 1;
+    mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+    mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
 
     raycaster.setFromCamera(mouse, camera);
     const hits = raycaster.intersectObjects([...meshToKey.keys()]);
-    
+
     let currentHover = null;
     if (hits.length) {
         currentHover = meshToKey.get(hits[0].object);
     }
 
-    if (currentHover !== hoveredPart) {
-        hoveredPart = currentHover;
-        container.style.cursor = hoveredPart ? 'pointer' : 'default';
-        updatePartVisibilities();
-        
-        ['engine', 'brakes', 'tires', 'suspension', 'pedal'].forEach(key => {
-            const card = document.getElementById(`label-${key}`);
-            if (card) {
-                card.classList.toggle('active', key === hoveredPart);
-            }
-        });
-    }
+    setHoveredPart(currentHover);
 });
 
 container.addEventListener('click', e => {
+    if (e.target.closest('.hud-tag') || e.target.closest('.detail-drawer') || e.target.closest('.canvas-topbar')) return;
+
     const rect = renderer.domElement.getBoundingClientRect();
-    mouse.x =  ((e.clientX - rect.left) / rect.width)  * 2 - 1;
-    mouse.y = -((e.clientY - rect.top)  / rect.height) * 2 + 1;
+    mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+    mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
 
     raycaster.setFromCamera(mouse, camera);
     const hits = raycaster.intersectObjects([...meshToKey.keys()]);
@@ -615,11 +623,11 @@ const FORMULAS = {
 };
 
 const DISPLAY = {
-    engine:     'Unit Perakitan Mesin Utama',
-    brakes:     'Sistem Kaliper & Cakram Rem',
-    tires:      'Sistem Ban & Pengaturan Tekanan',
+    engine: 'Unit Perakitan Mesin Utama',
+    brakes: 'Sistem Kaliper & Cakram Rem',
+    tires: 'Sistem Ban & Pengaturan Tekanan',
     suspension: 'Peredam Kejut & Suspensi Sasis',
-    pedal:      'Modul Pedal Akselerator'
+    pedal: 'Modul Pedal Akselerator'
 };
 
 function selectComponent(key) {
@@ -630,18 +638,18 @@ function selectComponent(key) {
 
 function showDrawer(key) {
     if (!globalState) return;
-    const P    = globalState.parts;
+    const P = globalState.parts;
     const part = P[key];
 
     document.getElementById('detail-drawer').classList.add('active');
     document.getElementById('drawer-empty').classList.add('hidden');
     document.getElementById('drawer-detail').classList.remove('hidden');
 
-    document.getElementById('drawer-title').innerText    = DISPLAY[key];
+    document.getElementById('drawer-title').innerText = DISPLAY[key];
     document.getElementById('drawer-subtitle').innerText = `Terakhir diperbarui via telemetri lokal`;
-    document.getElementById('drawer-pct').innerText      = `${part.health.toFixed(1)}%`;
-    document.getElementById('drawer-pct').style.color    = colorFor(part.health);
-    document.getElementById('drawer-bar').style.width           = `${part.health}%`;
+    document.getElementById('drawer-pct').innerText = `${part.health.toFixed(1)}%`;
+    document.getElementById('drawer-pct').style.color = colorFor(part.health);
+    document.getElementById('drawer-bar').style.width = `${part.health}%`;
     document.getElementById('drawer-bar').style.background = colorForGradient(part.health);
 
     const badge = document.getElementById('drawer-badge');
@@ -649,7 +657,7 @@ function showDrawer(key) {
     if (part.health > 70) {
         badge.innerText = 'OPTIMAL'; badge.classList.add('badge-ok');
     } else if (part.health > 30) {
-        badge.innerText = 'PERINGATAN ⚠';  badge.classList.add('badge-warn');
+        badge.innerText = 'PERINGATAN ⚠'; badge.classList.add('badge-warn');
     } else {
         badge.innerText = 'KRITIS ✕'; badge.classList.add('badge-crit');
     }
@@ -679,14 +687,14 @@ function showDrawer(key) {
     });
 
     let live = '—';
-    if (key === 'engine')     live = `${P.engine.rpm.toLocaleString('id-ID')} RPM`;
-    if (key === 'brakes')     live = `${P.brakes.temperature.toFixed(0)}°C`;
-    if (key === 'tires')      live = `${P.tires.pressure.toFixed(1)} PSI`;
+    if (key === 'engine') live = `${P.engine.rpm.toLocaleString('id-ID')} RPM`;
+    if (key === 'brakes') live = `${P.brakes.temperature.toFixed(0)}°C`;
+    if (key === 'tires') live = `${P.tires.pressure.toFixed(1)} PSI`;
     if (key === 'suspension') live = `${P.suspension.events} getaran terekam`;
-    if (key === 'pedal')      live = `${P.pedal.position}% ditekan`;
+    if (key === 'pedal') live = `${P.pedal.position}% ditekan`;
 
-    document.getElementById('d-live').innerText    = live;
-    document.getElementById('d-status').innerText  = part.health > 70 ? 'Nominal / Beroperasi Baik' : part.health > 30 ? 'Mengalami Degradasi' : 'Kritis — Butuh Servis Segera';
+    document.getElementById('d-live').innerText = live;
+    document.getElementById('d-status').innerText = part.health > 70 ? 'Nominal / Beroperasi Baik' : part.health > 30 ? 'Mengalami Degradasi' : 'Kritis — Butuh Servis Segera';
     document.getElementById('d-service').innerText = `${Math.round(45000 * (part.health / 100)).toLocaleString('id-ID')} km sisa pakai`;
 }
 
@@ -701,11 +709,11 @@ function closeDrawer() {
 }
 
 const ANNO_TARGETS = {
-    engine:     { mesh: partsMeshes.engine[0],     offsetX: -150, offsetY: -90 },
-    brakes:     { mesh: partsMeshes.brakes[0],     offsetX: -150, offsetY:  65 },
-    tires:      { mesh: partsMeshes.tires[1],      offsetX:  120, offsetY: -70 },
-    suspension: { mesh: partsMeshes.suspension[19], offsetX:  120, offsetY:  80 },
-    pedal:      { mesh: partsMeshes.pedal[0],      offsetX:  80, offsetY:  40 }
+    engine: { mesh: partsMeshes.engine[0], offsetX: -150, offsetY: -90 },
+    brakes: { mesh: partsMeshes.brakes[0], offsetX: -150, offsetY: 65 },
+    tires: { mesh: partsMeshes.tires[1], offsetX: 120, offsetY: -70 },
+    suspension: { mesh: partsMeshes.suspension[19], offsetX: 120, offsetY: 80 },
+    pedal: { mesh: partsMeshes.pedal[0], offsetX: 80, offsetY: 40 }
 };
 
 const svg = document.getElementById('anno-svg');
@@ -738,15 +746,15 @@ function updateHUDLines() {
         }
 
         const proj = worldPos.clone().project(camera);
-        const sx   = (proj.x *  0.5 + 0.5) * rect.width;
-        const sy   = (proj.y * -0.5 + 0.5) * rect.height;
+        const sx = (proj.x * 0.5 + 0.5) * rect.width;
+        const sy = (proj.y * -0.5 + 0.5) * rect.height;
 
         const label = document.getElementById(`label-${key}`);
-        const path  = document.getElementById(`path-${key}`);
+        const path = document.getElementById(`path-${key}`);
 
         if (proj.z > 1 || sx < 0 || sx > rect.width || sy < 0 || sy > rect.height) {
-            label.style.display = 'none'; 
-            path.setAttribute('d', ''); 
+            label.style.display = 'none';
+            path.setAttribute('d', '');
             anchorDots[key].style.display = 'none';
             continue;
         }
@@ -758,14 +766,14 @@ function updateHUDLines() {
 
         let dx = sx + cfg.offsetX;
         let dy = sy + cfg.offsetY;
-        const lw = label.offsetWidth  || 130;
+        const lw = label.offsetWidth || 130;
         const lh = label.offsetHeight || 50;
-        
-        dx = Math.max(6, Math.min(rect.width  - lw - 6, dx));
+
+        dx = Math.max(6, Math.min(rect.width - lw - 6, dx));
         dy = Math.max(6, Math.min(rect.height - lh - 6, dy));
 
         label.style.left = `${dx}px`;
-        label.style.top  = `${dy}px`;
+        label.style.top = `${dy}px`;
 
         const lx = dx + lw / 2;
         const ly = dy + lh / 2;
@@ -773,7 +781,7 @@ function updateHUDLines() {
         const my = sy;
 
         path.setAttribute('d', `M ${sx} ${sy} Q ${mx} ${my} ${lx} ${ly}`);
-        
+
         if (globalState) {
             const health = globalState.parts[key].health;
             const color = colorFor(health);
@@ -787,7 +795,7 @@ function updateHUDLines() {
 let viewMode = '3D';
 const VIEWS = {
     '2D': { pos: new THREE.Vector3(0, 8.0, 0.01), look: new THREE.Vector3(0, 0, 0), orbit: false },
-    '3D': { pos: new THREE.Vector3(3.0, 2.0, 4.0), look: new THREE.Vector3(0, 0, 0), orbit: true  }
+    '3D': { pos: new THREE.Vector3(3.0, 2.0, 4.0), look: new THREE.Vector3(0, 0, 0), orbit: true }
 };
 
 let isTransitioning = false;
@@ -801,11 +809,11 @@ function setViewMode(m) {
     viewMode = m;
     document.getElementById('btn-2d').classList.toggle('active', m === '2D');
     document.getElementById('btn-3d').classList.toggle('active', m === '3D');
-    
+
     targetCamPos.copy(VIEWS[m].pos);
     targetCamLook.copy(VIEWS[m].look);
     isTransitioning = true;
-    
+
     controls.enabled = (m === '3D');
 }
 
@@ -830,7 +838,7 @@ function animate() {
     if (isTransitioning) {
         camera.position.lerp(targetCamPos, 0.08);
         controls.target.lerp(targetCamLook, 0.08);
-        
+
         if (camera.position.distanceTo(targetCamPos) < 0.02 && controls.target.distanceTo(targetCamLook) < 0.02) {
             camera.position.copy(targetCamPos);
             controls.target.copy(targetCamLook);

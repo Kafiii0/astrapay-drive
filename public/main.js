@@ -634,6 +634,7 @@ function selectComponent(key) {
     selectedPart = key;
     showDrawer(key);
     updatePartVisibilities();
+    if (typeof updateCameraTarget === 'function') updateCameraTarget();
 }
 
 function showDrawer(key) {
@@ -706,6 +707,7 @@ function closeDrawer() {
     document.getElementById('drawer-title').innerText = 'Tidak Ada Komponen Terpilih';
 
     updatePartVisibilities();
+    if (typeof updateCameraTarget === 'function') updateCameraTarget();
 }
 
 const ANNO_TARGETS = {
@@ -805,16 +807,37 @@ const targetCamLook = new THREE.Vector3().copy(VIEWS['3D'].look);
 camera.position.copy(VIEWS['3D'].pos);
 controls.target.copy(VIEWS['3D'].look);
 
+function updateCameraTarget() {
+    let tLook = new THREE.Vector3().copy(VIEWS[viewMode].look);
+    let tPos = new THREE.Vector3().copy(VIEWS[viewMode].pos);
+
+    if (viewMode === '2D' && selectedPart) {
+        tLook.x += 1.5;
+        tPos.x += 1.5;
+    }
+
+    targetCamPos.copy(tPos);
+    targetCamLook.copy(tLook);
+    isTransitioning = true;
+}
+
 function setViewMode(m) {
     viewMode = m;
     document.getElementById('btn-2d').classList.toggle('active', m === '2D');
     document.getElementById('btn-3d').classList.toggle('active', m === '3D');
 
-    targetCamPos.copy(VIEWS[m].pos);
-    targetCamLook.copy(VIEWS[m].look);
-    isTransitioning = true;
+    updateCameraTarget();
 
-    controls.enabled = (m === '3D');
+    controls.enabled = true;
+    if (m === '2D') {
+        controls.enableRotate = false;
+        controls.enablePan = true;
+        controls.enableZoom = true;
+    } else {
+        controls.enableRotate = true;
+        controls.enablePan = true;
+        controls.enableZoom = true;
+    }
 }
 
 setViewMode('3D');

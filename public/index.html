@@ -55,6 +55,7 @@
                         <path id="path-brakes" class="anno-line" />
                         <path id="path-tires" class="anno-line" />
                         <path id="path-suspension" class="anno-line" />
+                        <path id="path-pedal" class="anno-line" />
                     </svg>
 
                     <div class="hud-tag" id="label-engine" onclick="selectComponent('engine')">
@@ -87,6 +88,14 @@
                             <span class="hud-label-name">SUSPENSI</span>
                             <span class="hud-label-val" id="hud-suspension-val">100%</span>
                             <span class="hud-label-sub" id="hud-suspension-sub">0 Dampak Log</span>
+                        </div>
+                    </div>
+                    <div class="hud-tag" id="label-pedal" onclick="selectComponent('pedal')">
+                        <div class="hud-sensor-dot" id="dot-pedal"></div>
+                        <div class="hud-tag-content">
+                            <span class="hud-label-name">PEDAL GAS</span>
+                            <span class="hud-label-val" id="hud-pedal-val">100%</span>
+                            <span class="hud-label-sub" id="hud-pedal-sub">0% Posisi</span>
                         </div>
                     </div>
 

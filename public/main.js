@@ -4,7 +4,8 @@ let globalState = {
         brakes:     { health: 100, events: 0, temperature: 38 },
         tires:      { health: 100, events: 0, pressure: 32 },
         engine:     { health: 100, events: 0, rpm: 800 },
-        suspension: { health: 100, events: 0, load: 0.1 }
+        suspension: { health: 100, events: 0, load: 0.1 },
+        pedal:      { health: 100, events: 0, position: 0 }
     },
     sessionKm: 0
 };
@@ -46,6 +47,7 @@ function updateUI(data) {
     setTag('brakes',     P.brakes.health,     `${P.brakes.temperature.toFixed(0)}°C · ${P.brakes.events} Kejadian`);
     setTag('tires',      P.tires.health,      `${P.tires.pressure.toFixed(1)} PSI · ${P.tires.events} Kejadian`);
     setTag('suspension', P.suspension.health, `${P.suspension.events} Dampak Terdeteksi`);
+    setTag('pedal',      P.pedal.health,      `${P.pedal.position}% Posisi`);
 
     document.getElementById('speedo-num').innerText  = 0;
     document.getElementById('rpm-display').innerText = `${P.engine.rpm.toLocaleString('id-ID')} RPM`;
@@ -313,7 +315,7 @@ const mufflerGeo = new THREE.CylinderGeometry(0.08, 0.08, 0.32, 16);
     scene.add(tip);
 });
 
-const partsMeshes = { engine: [], brakes: [], tires: [], suspension: [] };
+const partsMeshes = { engine: [], brakes: [], tires: [], suspension: [], pedal: [] };
 
 function makePart(geo, pos, color = 0x10b981) {
     const mat  = new THREE.MeshPhysicalMaterial({
@@ -451,6 +453,10 @@ wheelPos.forEach(pos => {
     partsMeshes.suspension.push(suspGroup);
 });
 
+const pedalMesh = makePart(new THREE.BoxGeometry(0.08, 0.15, 0.02), [0.35, 0.1, 0.75], 0x10b981);
+pedalMesh.rotation.x = -Math.PI / 6;
+partsMeshes.pedal.push(pedalMesh);
+
 function update3DModel(data) {
     const P = data.parts;
 
@@ -479,6 +485,7 @@ function update3DModel(data) {
     applyColor(partsMeshes.brakes,     P.brakes.health);
     applyColor(partsMeshes.tires,      P.tires.health);
     applyColor(partsMeshes.suspension, P.suspension.health);
+    applyColor(partsMeshes.pedal,      P.pedal.health);
 }
 
 const raycaster = new THREE.Raycaster();
@@ -509,7 +516,7 @@ container.addEventListener('mousemove', e => {
         container.style.cursor = hoveredPart ? 'pointer' : 'default';
         updatePartVisibilities();
         
-        ['engine', 'brakes', 'tires', 'suspension'].forEach(key => {
+        ['engine', 'brakes', 'tires', 'suspension', 'pedal'].forEach(key => {
             const card = document.getElementById(`label-${key}`);
             if (card) {
                 card.classList.toggle('active', key === hoveredPart);
@@ -594,6 +601,16 @@ const FORMULAS = {
             { sym: 'v', def: 'Kecepatan kendaraan saat ini (km/h)' },
             { sym: '16', def: 'Konstanta sensitivitas respon impuls suspensi' }
         ]
+    },
+    pedal: {
+        math: 'ΔH = 5 × (pedal_gas% / 100) × frekuensi_injak',
+        desc: 'Keausan sensor dan pegas pedal gas bergantung pada intensitas penekanan dan frekuensi injakan oleh pengemudi.',
+        vars: [
+            { sym: 'ΔH', def: 'Laju keausan komponen mekanis pedal (%)' },
+            { sym: 'pedal_gas%', def: 'Tingkat pembukaan pedal (0-100%)' },
+            { sym: 'frekuensi_injak', def: 'Jumlah injakan per menit' },
+            { sym: '5', def: 'Konstanta degradasi material pedal' }
+        ]
     }
 };
 
@@ -601,7 +618,8 @@ const DISPLAY = {
     engine:     'Unit Perakitan Mesin Utama',
     brakes:     'Sistem Kaliper & Cakram Rem',
     tires:      'Sistem Ban & Pengaturan Tekanan',
-    suspension: 'Peredam Kejut & Suspensi Sasis'
+    suspension: 'Peredam Kejut & Suspensi Sasis',
+    pedal:      'Modul Pedal Akselerator'
 };
 
 function selectComponent(key) {
@@ -665,6 +683,7 @@ function showDrawer(key) {
     if (key === 'brakes')     live = `${P.brakes.temperature.toFixed(0)}°C`;
     if (key === 'tires')      live = `${P.tires.pressure.toFixed(1)} PSI`;
     if (key === 'suspension') live = `${P.suspension.events} getaran terekam`;
+    if (key === 'pedal')      live = `${P.pedal.position}% ditekan`;
 
     document.getElementById('d-live').innerText    = live;
     document.getElementById('d-status').innerText  = part.health > 70 ? 'Nominal / Beroperasi Baik' : part.health > 30 ? 'Mengalami Degradasi' : 'Kritis — Butuh Servis Segera';
@@ -685,12 +704,13 @@ const ANNO_TARGETS = {
     engine:     { mesh: partsMeshes.engine[0],     offsetX: -150, offsetY: -90 },
     brakes:     { mesh: partsMeshes.brakes[0],     offsetX: -150, offsetY:  65 },
     tires:      { mesh: partsMeshes.tires[1],      offsetX:  120, offsetY: -70 },
-    suspension: { mesh: partsMeshes.suspension[19], offsetX:  120, offsetY:  80 }
+    suspension: { mesh: partsMeshes.suspension[19], offsetX:  120, offsetY:  80 },
+    pedal:      { mesh: partsMeshes.pedal[0],      offsetX:  80, offsetY:  40 }
 };
 
 const svg = document.getElementById('anno-svg');
 const anchorDots = {};
-['engine', 'brakes', 'tires', 'suspension'].forEach(key => {
+['engine', 'brakes', 'tires', 'suspension', 'pedal'].forEach(key => {
     const circ = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
     circ.setAttribute('r', '4');
     circ.style.fill = 'var(--primary)';
